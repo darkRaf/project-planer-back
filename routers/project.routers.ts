@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { ProjectRecord } from '../records/project.record';
 
 export const projectRoters = Router()
   .get('/', async (req, res) => {
@@ -8,7 +9,9 @@ export const projectRoters = Router()
   .get('/:id', async (req, res) => {
     const id = req.params.id;
 
-    res.json({ getProjectId: id });
+    const projectData = await ProjectRecord.getOne(id);
+
+    res.json(projectData);
   })
 
   .post('/', async (req, res) => {

@@ -1,10 +1,13 @@
 import { Router } from 'express';
+import { UserRecord } from '../records/user.record';
 
 export const userRoters = Router()
   .get('/:id', async (req, res) => {
     const id = req.params.id;
 
-    res.json({ getUserId: id });
+    const user = await UserRecord.getOne(id);
+
+    res.json(user);
   })
 
   .post('/', async (req, res) => {
