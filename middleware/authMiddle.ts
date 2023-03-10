@@ -15,7 +15,7 @@ export const authMiddle = (req: RequestTokenData, res: Response, next: NextFunct
   if (!token) throw new TokenError(401, 'Nieautoryzowany dostęp.');
 
   jwt.verify(token, ACCESS_TOKEN, (err, data) => {
-    if (err) throw new TokenError(403, 'Dostęp zabrioniony');
+    if (err) throw new TokenError(403, 'Dostęp zabroniony.');
 
     req.user = data;
     next();

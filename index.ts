@@ -7,14 +7,15 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { registerRouters } from './routers/register.routers';
 import { loginRouters } from './routers/login.routers';
+import { logoutRouters } from './routers/logout.routers';
+import { refreshRouters } from './routers/refresh.routers';
+import { authMiddle } from './middleware/authMiddle';
 import { userRoters } from './routers/user.routers';
 import { projectRoters } from './routers/project.routers';
 import { cardRoters } from './routers/card.routers';
 import { taskRoters } from './routers/task.roters';
 import { bodyRoters } from './routers/body.routers';
 import { errorHandler } from './utils/errors';
-import { authMiddle } from './middleware/authMiddle';
-import { refreshRouters } from './routers/refresh.routers';
 
 const PORT = process.env.PORT || 3001;
 
@@ -31,9 +32,9 @@ app.use(json());
 
 app.use('/register', registerRouters);
 app.use('/login', loginRouters);
+app.use('/logout', logoutRouters);
 app.use('/refresh-token', refreshRouters);
 app.use(authMiddle);
-// app.use('/logout', logoutRouters);
 app.use('/user', userRoters);
 app.use('/project', projectRoters);
 app.use('/card', cardRoters);

@@ -51,17 +51,15 @@ export class UserRecord implements UserEntity {
   }
 
   static async setToken(id: string, token: string): Promise<void> {
-    await pool.execute('UPDATE `users` SET `token` = :token WHERE `users`.`id` = :id', {
-      id,
-      token,
-    });
+    await pool.execute('UPDATE `users` SET `token` = :token WHERE `id` = :id', { id, token });
+  }
+
+  static async removeToken(token: string): Promise<void> {
+    await pool.execute('UPDATE `users` SET `token` = NULL WHERE `token` = :token', { token });
   }
 
   static async setPassword(id: string, pass: string): Promise<void> {
-    await pool.execute('UPDATE `users` SET `password` = :pass WHERE `users`.`id` = :id', {
-      id,
-      pass,
-    });
+    await pool.execute('UPDATE `users` SET `password` = :pass WHERE `id` = :id', { id, pass });
   }
 
   async save(): Promise<string> {
@@ -72,8 +70,6 @@ export class UserRecord implements UserEntity {
         //TODO: wygenerowć błąd 'Produkt już jest w bazie'
       }
 
-      console.log(this);
-
       await pool.execute(
         'INSERT INTO `users`(`id`, `email`, `name`, `lastName`, `password`, `settings`, `token`) VALUES (:id, :email, :name, :lastName, :password, :settings, :token)',
         this,
@@ -83,7 +79,7 @@ export class UserRecord implements UserEntity {
     } catch (err) {
       console.log(err.message);
 
-      //TODO: przechwicic bład i wygenerować przyjazny dla usera
+      //TODO: przechwicic bład i wygenerować przyjazny dla usera req
       throw new Error('Error save data.');
     }
   }

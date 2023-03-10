@@ -2,9 +2,10 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRecord } from '../records/user.record';
 import { PayloadUser } from '../types';
-import { TokenError } from '../utils/errors';
+import { createTokens } from '../utils/createTokens';
+import { TokenError, ValidationError } from '../utils/errors';
 
-const { ACCESS_TOKEN, REFRESH_TOKEN } = process.env;
+const { REFRESH_TOKEN } = process.env;
 
 export const refreshRouters = Router().get('/', async (req, res) => {
   const refreshToken = req.cookies.refreshToken as string;
@@ -12,18 +13,22 @@ export const refreshRouters = Router().get('/', async (req, res) => {
   if (!refreshToken) throw new TokenError(401, 'Nieautoryzowany dostęp.');
 
   const isToken = await UserRecord.isSetToken(refreshToken);
-  if (!isToken) throw new TokenError(403, 'Dostęp zabrioniony');
+  if (!isToken) throw new TokenError(403, 'Dostęp zabroniony');
 
   jwt.verify(refreshToken, REFRESH_TOKEN, async (err, data: PayloadUser) => {
-    if (err) throw new TokenError(403, 'Dostęp zabrioniony');
+    if (err) throw new TokenError(403, 'Dostęp zabroniony');
 
-    const payload = {
-      id: data.id,
-      emial: data.email,
-      name: data.name,
-    };
+    const user = await UserRecord.getOne(data.id);
+    if (!user) throw new ValidationError(401, 'Podany użytkownik nie istnieje.');
 
-    const accessToken = jwt.sign(payload, ACCESS_TOKEN, { expiresIn: '15m' });
+    const { accessToken, refreshToken } = createTokens(user);
+
+    await UserRecord.setToken(data.id, refreshToken);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     res.json({ accessToken });
   });
