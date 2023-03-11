@@ -20,20 +20,16 @@ export const registerRouters = Router().post('/', async (req: Request, res: Resp
 
   const hashPass = bcrypt.hashSync(password, 14);
 
-  try {
-    const newUser = new UserRecord({
-      name,
-      lastName,
-      email,
-      password: hashPass,
-      settings: null,
-      token: null,
-    });
+  const newUser = new UserRecord({
+    name,
+    lastName,
+    email,
+    password: hashPass,
+    settings: null,
+    token: null,
+  });
 
-    await newUser.save();
+  await newUser.save();
 
-    res.status(200).json({ message: 'Sukces.' });
-  } catch (err) {
-    throw new ValidationError();
-  }
+  res.status(200).json({ message: 'Sukces.' });
 });

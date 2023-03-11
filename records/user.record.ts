@@ -1,7 +1,8 @@
 import { pool } from '../utils/db';
 import { FieldPacket } from 'mysql2';
-import { AddUserEntity, UserEntity } from '../types';
+import { AddUserEntity, ErrorLoginEntity, UserEntity } from '../types';
 import { v4 as uuid } from 'uuid';
+import { ValidationError, ValidationRegisterError } from '../utils/errors';
 
 type UserdResults = [UserEntity[], FieldPacket[]];
 
@@ -15,7 +16,37 @@ export class UserRecord implements UserEntity {
   token: string;
 
   constructor(obj: AddUserEntity) {
-    //TODO: dodać walidację
+    const errors: ErrorLoginEntity[] = [];
+
+    if (obj.email.length < 8 || obj.email.length > 40) {
+      errors.push({
+        name: 'email',
+        message: 'Pole `Email` musi zawierać od 8 do 40 znaków.',
+      });
+    }
+
+    if (obj.name.length < 3 || obj.name.length > 40) {
+      errors.push({
+        name: 'name',
+        message: 'Pole `Imię` musi zawierać od 3 do 20 znaków.',
+      });
+    }
+
+    if (obj.lastName.length < 3 || obj.lastName.length > 40) {
+      errors.push({
+        name: 'lastName',
+        message: 'Pole `Nazwisko` musi zawierać od 3 do 30 znaków.',
+      });
+    }
+
+    if (obj.password.length < 8 || obj.password.length > 20) {
+      errors.push({
+        name: 'password',
+        message: 'Pole `Hasło` musi zawierać od 8 do 20 znaków.',
+      });
+    }
+
+    if (errors.length) throw new ValidationRegisterError(400, errors);
 
     this.id = obj.id;
     this.email = obj.email;
@@ -31,7 +62,7 @@ export class UserRecord implements UserEntity {
       id,
     })) as UserdResults;
 
-    return results.length === 0 ? null : new UserRecord(results[0]);
+    return results.length === 0 ? null : results[0];
   }
 
   static async getByEmail(email: string): Promise<UserEntity | null> {
@@ -39,7 +70,7 @@ export class UserRecord implements UserEntity {
       email,
     })) as UserdResults;
 
-    return results.length === 0 ? null : new UserRecord(results[0]);
+    return results.length === 0 ? null : results[0];
   }
 
   static async isSetToken(token: string): Promise<boolean | null> {
@@ -67,7 +98,7 @@ export class UserRecord implements UserEntity {
       if (!this.id) {
         this.id = uuid();
       } else {
-        //TODO: wygenerowć błąd 'Produkt już jest w bazie'
+        throw new ValidationError(400, 'Nie można zapisać użytkownika w bazie.');
       }
 
       await pool.execute(
@@ -77,10 +108,7 @@ export class UserRecord implements UserEntity {
 
       return this.id;
     } catch (err) {
-      console.log(err.message);
-
-      //TODO: przechwicic bład i wygenerować przyjazny dla usera req
-      throw new Error('Error save data.');
+      throw new Error();
     }
   }
 }
