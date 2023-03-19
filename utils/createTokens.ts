@@ -12,7 +12,7 @@ export const createTokens = (users: UserEntity): AccessTokenEntity => {
   const payload = {
     id: users.id,
     email: users.email,
-    name: users.email,
+    name: users.name,
   };
 
   const accessToken = jwt.sign(payload, ACCESS_TOKEN, { expiresIn: '15m' });

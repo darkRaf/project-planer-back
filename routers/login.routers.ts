@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { UserRecord } from '../records/user.record';
 import { ValidationError } from '../utils/errors';
 import { createTokens } from '../utils/createTokens';
+import { userCookieSettings } from '../settings/settings';
 
 type UserLoginData = {
   email: string;
@@ -11,6 +12,7 @@ type UserLoginData = {
 
 export const loginRouters = Router().post('/', async (req, res) => {
   const frontData = req.body as UserLoginData;
+
   if (!frontData?.email || !frontData?.password) throw new ValidationError(401, 'Niepoprawny login lub hasło.');
 
   const { email: frontEmail, password: frontPass } = frontData;
@@ -25,10 +27,7 @@ export const loginRouters = Router().post('/', async (req, res) => {
 
   await UserRecord.setToken(user.id, refreshToken);
 
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie('refreshToken', refreshToken, userCookieSettings);
 
-  res.json({ accessToken });
+  res.json({ accessToken, name: user.name, lastName: user.lastName });
 });

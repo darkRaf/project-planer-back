@@ -16,3 +16,9 @@ export interface UserEntity extends SimpleUser {
 }
 
 export type PayloadUser = Omit<UserEntity, 'lastName' | 'password' | 'settings' | 'token'>;
+
+export type LoginResponse = {
+  accessToken: string;
+  name: string;
+  lastName: string;
+};

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRecord } from '../records/user.record';
+import { userCookieSettings } from '../settings/settings';
 import { PayloadUser } from '../types';
 import { createTokens } from '../utils/createTokens';
 import { TokenError, ValidationError } from '../utils/errors';
@@ -25,11 +26,8 @@ export const refreshRouters = Router().get('/', async (req, res) => {
 
     await UserRecord.setToken(data.id, refreshToken);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie('refreshToken', refreshToken, userCookieSettings);
 
-    res.json({ accessToken });
+    res.json({ accessToken, name: user.name, lastName: user.lastName });
   });
 });
