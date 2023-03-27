@@ -1,3 +1,5 @@
+import { UserSettingsEntity } from './userSettings';
+
 export interface AddUserEntity extends Omit<SimpleUser, 'id'> {
   id?: string;
 }
@@ -20,5 +22,11 @@ export type PayloadUser = Omit<UserEntity, 'lastName' | 'password' | 'settings' 
 export type LoginResponse = {
   accessToken: string;
   name: string;
-  lastName: string;
+  lastname: string;
+  settings: UserSettingsEntity;
+};
+
+export type RegisterResponse = {
+  emial: string;
+  message: string;
 };

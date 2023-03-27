@@ -4,3 +4,4 @@ export * from './taskEntyti';
 export * from './taskBodyEntity';
 export * from './userEntity';
 export * from './errorEntity';
+export * from './userSettings';
