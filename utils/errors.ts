@@ -27,6 +27,9 @@ export class ValidationRegisterError extends ValidationError {
 }
 
 export const errorHandler = (err: Errors, req: Request, res: Response, next: NextFunction) => {
+  // TODO: do usunięcia
+  console.log(err);
+
   if (err instanceof ValidationRegisterError) {
     return res.status(err.status).json({ message: JSON.parse(err.message) });
   }

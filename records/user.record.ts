@@ -16,6 +16,8 @@ export class UserRecord implements UserEntity {
   token: string;
 
   constructor(obj: AddUserEntity) {
+    console.log(obj);
+
     const errors: ErrorLoginEntity[] = [];
 
     if (obj.email.length < 8 || obj.email.length > 40) {
@@ -36,13 +38,6 @@ export class UserRecord implements UserEntity {
       errors.push({
         name: 'lastName',
         message: 'Pole `Nazwisko` musi zawierać od 3 do 30 znaków.',
-      });
-    }
-
-    if (obj.password.length < 8 || obj.password.length > 20) {
-      errors.push({
-        name: 'password',
-        message: 'Pole `Hasło` musi zawierać od 8 do 20 znaków.',
       });
     }
 
@@ -108,7 +103,7 @@ export class UserRecord implements UserEntity {
 
       return this.id;
     } catch (err) {
-      throw new Error();
+      throw new Error(err);
     }
   }
 }

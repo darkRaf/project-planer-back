@@ -29,5 +29,5 @@ export const loginRouters = Router().post('/', async (req, res) => {
 
   res.cookie('refreshToken', refreshToken, userCookieSettings);
 
-  res.json({ accessToken, name: user.name, lastName: user.lastName });
+  res.json({ accessToken, name: user.name, lastName: user.lastName, email: user.email });
 });
