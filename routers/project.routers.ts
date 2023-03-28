@@ -1,9 +1,12 @@
 import { Router } from 'express';
+import { RequestTokenData } from '../middleware/authMiddle';
 import { ProjectRecord } from '../records/project.record';
 
-export const projectRoters = Router()
-  .get('/', async (req, res) => {
-    res.json({ getProjects: 'all' });
+export const projectRouters = Router()
+  .get('/', async (req: RequestTokenData, res) => {
+    const { id } = req.user;
+
+    res.json(await ProjectRecord.getAll(id));
   })
 
   .get('/:id', async (req, res) => {
@@ -15,10 +18,11 @@ export const projectRoters = Router()
   })
 
   .post('/', async (req, res) => {
-    const body = req.body;
-    body.postProjectAdded = 'added';
+    const newProject = new ProjectRecord({ ...(req.body as ProjectRecord) });
 
-    res.json(body);
+    const id = await newProject.save();
+
+    res.json({ id });
   })
 
   .delete('/:id', async (req, res) => {
