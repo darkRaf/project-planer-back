@@ -1,7 +1,8 @@
 import { UserSettingsEntity } from './userSettings';
 
-export interface AddUserEntity extends Omit<SimpleUser, 'id'> {
+export interface AddUserEntity extends Omit<SimpleUser, 'id' | 'settings'> {
   id?: string;
+  settings: string;
 }
 
 export interface SimpleUser {
@@ -9,7 +10,7 @@ export interface SimpleUser {
   name: string;
   lastName: string;
   password: string | null;
-  settings: string | null;
+  settings: UserSettingsEntity;
   token: string | null;
 }
 
@@ -19,11 +20,9 @@ export interface UserEntity extends SimpleUser {
 
 export type PayloadUser = Omit<UserEntity, 'lastName' | 'password' | 'settings' | 'token'>;
 
-export type LoginResponse = {
+export type LoginResponse = Omit<SimpleUser, 'token' | 'password'> & {
   accessToken: string;
-  name: string;
-  lastname: string;
-  settings: UserSettingsEntity;
+  id: string;
 };
 
 export type RegisterResponse = {

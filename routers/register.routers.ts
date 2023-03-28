@@ -13,8 +13,7 @@ type RegisterReq = {
 };
 
 export const registerRouters = Router().post('/', async (req: Request, res: Response) => {
-  const registerData = req.body as RegisterReq;
-  const { name, lastName, email, password, confirmPassword } = registerData;
+  const { name, lastName, email, password, confirmPassword } = req.body as RegisterReq;
 
   const regx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/;
   const test = password.match(regx);
@@ -37,7 +36,7 @@ export const registerRouters = Router().post('/', async (req: Request, res: Resp
     lastName,
     email,
     password: hashPass,
-    settings: JSON.stringify(defaultUserSettings),
+    settings: JSON.stringify(defaultUserSettings) as string,
     token: null,
   });
 

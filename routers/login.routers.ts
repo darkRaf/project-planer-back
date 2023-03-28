@@ -24,10 +24,11 @@ export const loginRouters = Router().post('/', async (req, res) => {
   if (!access) throw new ValidationError(401, 'Niepoprawne hasło.');
 
   const { accessToken, refreshToken } = createTokens(user);
+  const { id, name, lastName, email, settings } = user;
 
   await UserRecord.setToken(user.id, refreshToken);
 
   res.cookie('refreshToken', refreshToken, userCookieSettings);
 
-  res.json({ accessToken, name: user.name, lastName: user.lastName, email: user.email });
+  res.json({ accessToken, id, name, lastName, email, settings });
 });

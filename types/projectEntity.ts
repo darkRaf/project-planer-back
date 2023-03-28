@@ -9,6 +9,7 @@ export interface ProjectEntity {
   title: string;
   userId: string;
   cardsId: string[];
+  settings: string;
 }
 
 export interface ProjectEntityResponse {
@@ -22,3 +23,11 @@ export interface ProjectEntityResponse {
 export interface ProjectResponseData extends ProjectEntity {
   cards: CardResponse[];
 }
+
+export type ProjectSettingsEntity = {
+  bgImg: string;
+};
+
+export const defaultProjectSettings: ProjectSettingsEntity = {
+  bgImg: 'bg-1.jpg',
+};

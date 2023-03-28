@@ -1,12 +1,12 @@
 import { pool } from '../utils/db';
 import { FieldPacket } from 'mysql2';
-import { AddUserEntity, ErrorLoginEntity, UserEntity } from '../types';
+import { AddUserEntity, ErrorLoginEntity, UserEntity, UserSettingsEntity } from '../types';
 import { v4 as uuid } from 'uuid';
 import { ValidationError, ValidationRegisterError } from '../utils/errors';
 
 type UserdResults = [UserEntity[], FieldPacket[]];
 
-export class UserRecord implements UserEntity {
+export class UserRecord implements AddUserEntity {
   id: string;
   email: string;
   name: string;
