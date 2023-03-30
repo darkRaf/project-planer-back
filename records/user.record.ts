@@ -12,12 +12,10 @@ export class UserRecord implements AddUserEntity {
   name: string;
   lastName: string;
   password: string;
-  settings: string;
+  settings: UserSettingsEntity;
   token: string;
 
   constructor(obj: AddUserEntity) {
-    console.log(obj);
-
     const errors: ErrorLoginEntity[] = [];
 
     if (obj.email.length < 8 || obj.email.length > 40) {
@@ -48,7 +46,7 @@ export class UserRecord implements AddUserEntity {
     this.name = obj.name;
     this.lastName = obj.lastName;
     this.password = obj.password;
-    this.settings = obj.settings;
+    this.settings = typeof obj.settings === 'string' ? JSON.parse(obj.settings) : obj.settings;
     this.token = obj.token;
   }
 
@@ -57,15 +55,15 @@ export class UserRecord implements AddUserEntity {
       id,
     })) as UserdResults;
 
-    return results.length === 0 ? null : results[0];
+    return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
   static async getByEmail(email: string): Promise<UserEntity | null> {
     const [results] = (await pool.execute('SELECT * FROM `users` WHERE `email` = :email', {
       email,
-    })) as UserdResults;
+    })) as [UserRecord[], FieldPacket[]];
 
-    return results.length === 0 ? null : results[0];
+    return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
   static async isSetToken(token: string): Promise<boolean | null> {
@@ -105,5 +103,12 @@ export class UserRecord implements AddUserEntity {
     } catch (err) {
       throw new Error(err);
     }
+  }
+
+  async update(): Promise<void> {
+    await pool.execute(
+      'UPDATE `users` SET `email`=:email,`name`=:name,`lastName`=:lastName,`password`=:password,`settings`=:settings,`token`=:token WHERE `id`=:id',
+      this,
+    );
   }
 }

@@ -4,7 +4,7 @@ export type UserSettingsEntity = {
   thema: string;
 };
 
-export const defaultUserSettings: UserSettingsEntity = {
+export const defaultUserSettings = {
   avatarImg: 'avatar-1.svg',
   activeIdProject: '',
   thema: '',

@@ -2,7 +2,7 @@ import { UserSettingsEntity } from './userSettings';
 
 export interface AddUserEntity extends Omit<SimpleUser, 'id' | 'settings'> {
   id?: string;
-  settings: string;
+  settings: UserSettingsEntity | string;
 }
 
 export interface SimpleUser {

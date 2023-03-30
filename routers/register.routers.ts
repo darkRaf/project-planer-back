@@ -36,7 +36,7 @@ export const registerRouters = Router().post('/', async (req: Request, res: Resp
     lastName,
     email,
     password: hashPass,
-    settings: JSON.stringify(defaultUserSettings) as string,
+    settings: defaultUserSettings,
     token: null,
   });
 
