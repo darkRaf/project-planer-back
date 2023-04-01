@@ -9,10 +9,20 @@ import { TaskBodyEntity } from './taskBodyEntity';
 
 export type Priorities = 'high' | 'medium' | 'low' | 'undefined';
 
+export interface NewTaskdEntity {
+  title: string;
+  cardId: string;
+}
+
 export interface TaskEntity {
-  id: string;
+  id?: string;
   title: string;
   labels: Priorities[];
-  addedAt: string;
+  addedAt: string | null;
   body: TaskBodyEntity;
+}
+
+export interface TaskRequest {
+  title: string;
+  cardId: string;
 }

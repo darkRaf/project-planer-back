@@ -1,8 +1,8 @@
 import { TaskEntity } from './taskEntyti';
 
 export interface NewCardEntity extends Omit<CardEntity, 'id'> {
-  projectId: string;
   id?: string;
+  projectId: string;
 }
 
 export interface CardEntity {
@@ -13,4 +13,9 @@ export interface CardEntity {
 
 export interface CardResponse extends CardEntity {
   tasks: TaskEntity[];
+}
+
+export interface CardRequest {
+  title: string;
+  projectId: string;
 }
