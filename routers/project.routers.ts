@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { RequestTokenData } from '../middleware/authMiddle';
+import { CardRecord } from '../records/card.record';
 import { ProjectRecord } from '../records/project.record';
+import { TaskRecord } from '../records/task.record';
+import { UserRecord } from '../records/user.record';
+import { CardResponse, ProjectResponseData } from '../types';
 
 export const projectRouters = Router()
   .get('/', async (req: RequestTokenData, res) => {
@@ -10,19 +14,43 @@ export const projectRouters = Router()
   })
 
   .get('/:id', async (req, res) => {
-    const id = req.params.id;
+    const searchId = req.params.id;
 
-    const projectData = await ProjectRecord.getOne(id);
+    const { id, title, cardsId, background } = await ProjectRecord.getOne(searchId);
+    const cards = (await CardRecord.getCardsData(cardsId)) as CardResponse[];
+    for (const card of cards) {
+      const tasks = await TaskRecord.getTaskData(card.tasksId);
+      card.tasks = tasks;
+    }
 
-    res.json(projectData);
+    const resData: ProjectResponseData = {
+      cards,
+      id,
+      title,
+      userId: '',
+      cardsId,
+      background,
+    };
+
+    res.json(resData);
   })
 
-  .post('/', async (req, res) => {
-    const newProject = new ProjectRecord({ ...(req.body as ProjectRecord) });
+  .post('/', async (req: RequestTokenData, res) => {
+    const { id: userId } = req.user;
+    const projectData = {
+      cardsId: [],
+      ...req.body,
+      userId,
+    } as ProjectRecord;
 
+    const newProject = new ProjectRecord({ ...projectData });
     const id = await newProject.save();
 
-    res.json({ id });
+    const user = await UserRecord.getOne(userId);
+    user.settings.activeIdProject = id;
+    await new UserRecord(user).update();
+
+    res.json(user.settings);
   })
 
   .delete('/:id', async (req, res) => {
