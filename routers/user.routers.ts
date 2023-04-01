@@ -1,18 +1,31 @@
 import { Router } from 'express';
+import { RequestTokenData } from '../middleware/authMiddle';
 import { UserRecord } from '../records/user.record';
+import { SimpleUser } from '../types';
 
 export const userRouters = Router()
-  .get('/:id', async (req, res) => {
-    const id = req.params.id;
+  .get('/', async (req: RequestTokenData, res) => {
+    const { id } = req.user;
 
     const user = await UserRecord.getOne(id);
 
-    res.json(user);
+    res.json(user.settings);
   })
 
-  .put('/:id', async (req, res) => {
-    const id = req.params.id;
-    const body = req.body;
+  .put('/', async (req: RequestTokenData, res) => {
+    const { id } = req.user;
+    const { settings } = req.body as SimpleUser;
 
-    res.json({ putUser: id, ...body });
+    const user = await UserRecord.getOne(id);
+
+    if (settings) {
+      user.settings = {
+        ...user.settings,
+        ...settings,
+      };
+    }
+
+    await new UserRecord(user).update();
+
+    res.json({ response: 'ok' });
   });
