@@ -1,13 +1,13 @@
 import { TaskBodyEntity } from './taskBodyEntity';
 
-// export enum Priorities {
-//   High = 'high',
-//   Medium = 'medium',
-//   Low = 'low',
-//   Undefined = 'undefined'
-// }
+export enum Priorities {
+  High = 'high',
+  Medium = 'medium',
+  Low = 'low',
+  Undefined = 'undefined',
+}
 
-export type Priorities = 'high' | 'medium' | 'low' | 'undefined';
+// export type Priorities = 'high' | 'medium' | 'low' | 'undefined';
 
 export interface NewTaskdEntity {
   title: string;
@@ -17,7 +17,7 @@ export interface NewTaskdEntity {
 export interface TaskEntity {
   id?: string;
   title: string;
-  labels: Priorities[];
+  labels: Priorities;
   addedAt: string | null;
   body: TaskBodyEntity;
 }

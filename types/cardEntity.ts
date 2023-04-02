@@ -1,4 +1,4 @@
-import { TaskEntity } from './taskEntyti';
+import { TaskEntity } from './taskEntity';
 
 export interface NewCardEntity extends Omit<CardEntity, 'id'> {
   id?: string;

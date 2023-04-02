@@ -1,7 +1,9 @@
-import { Router } from 'express';
+import { Request, Router } from 'express';
 import { CardRecord } from '../records/card.record';
 import { TaskRecord } from '../records/task.record';
-import { TaskEntity, TaskRequest } from '../types';
+import { Priorities, TaskEntity, TaskRequest } from '../types';
+
+type RequestTask = Request & Partial<TaskEntity>;
 
 export const taskRouters = Router()
   .get('/:id', async (req, res) => {
@@ -14,10 +16,10 @@ export const taskRouters = Router()
     const { title, cardId } = req.body as TaskRequest;
     const task = {
       title,
-      labels: [],
+      labels: Priorities.Undefined,
       body: { checkList: [], deadline: '', description: '' },
       addedAt: '',
-      cardId: cardId,
+      cardId,
     } as TaskEntity;
 
     const newCard = new TaskRecord(task);
@@ -36,9 +38,17 @@ export const taskRouters = Router()
     res.json({ deleteTask: id });
   })
 
-  .put('/:id', async (req, res) => {
+  .put('/:id', async (req: RequestTask, res) => {
     const id = req.params.id;
-    const body = req.body;
 
-    res.json({ putTask: id, ...body });
+    const oldTask = await TaskRecord.getOne(id);
+
+    if (req.body.title) oldTask.title = req.body.title;
+    if (req.body.labels) oldTask.labels = req.body.labels;
+    if (req.body.body) oldTask.body = req.body.body;
+
+    const newTask = new TaskRecord(oldTask);
+    await newTask.update();
+
+    res.json({ status: 'ok' });
   });

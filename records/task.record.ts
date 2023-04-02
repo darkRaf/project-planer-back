@@ -9,12 +9,11 @@ type TaskRecordResults = [TaskRecord[], FieldPacket[]];
 export class TaskRecord implements TaskEntity {
   id: string;
   title: string;
-  labels: Priorities[];
+  labels: Priorities;
   addedAt: string | null;
   body: TaskBodyEntity;
 
   constructor(obj: TaskEntity) {
-    const labelsArr = typeof obj.labels === 'string' ? JSON.parse(obj.labels) : obj.labels;
     const bodyObj = typeof obj.body === 'string' ? JSON.parse(obj.body) : obj.body;
 
     if (obj.title.length < 3 || obj.title.length > 250) {
@@ -23,7 +22,7 @@ export class TaskRecord implements TaskEntity {
 
     this.id = obj.id;
     this.title = obj.title;
-    this.labels = labelsArr;
+    this.labels = obj.labels;
     this.addedAt = obj.addedAt;
     this.body = bodyObj;
   }
