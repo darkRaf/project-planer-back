@@ -14,7 +14,6 @@ import { userRouters } from './routers/user.routers';
 import { projectRouters } from './routers/project.routers';
 import { cardRouters } from './routers/card.routers';
 import { taskRouters } from './routers/task.routers';
-import { bodyRoters } from './routers/body.routers';
 import { errorHandler } from './utils/errors';
 
 const PORT = process.env.PORT || 3001;
@@ -40,7 +39,6 @@ app.use('/user', userRouters);
 app.use('/project', projectRouters);
 app.use('/card', cardRouters);
 app.use('/task', taskRouters);
-app.use('/body', bodyRoters);
 app.use('*', (req, res) => res.status(404).send('Not Found'));
 app.use(errorHandler);
 
