@@ -26,6 +26,6 @@ export type LoginResponse = Omit<SimpleUser, 'id' | 'token' | 'password'> & {
 };
 
 export type RegisterResponse = {
-  emial: string;
+  email: string;
   message: string;
 };
