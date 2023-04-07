@@ -1,7 +1,9 @@
-import { Router } from 'express';
+import { Request, Router } from 'express';
 import { CardRecord } from '../records/card.record';
 import { ProjectRecord } from '../records/project.record';
-import { CardRequest, CardResponse, NewCardEntity } from '../types';
+import { CardEntity, CardResponse, NewCardEntity } from '../types';
+
+type RequestCard = Request & Partial<CardEntity>;
 
 export const cardRouters = Router()
   .get('/:id', async (req, res) => {
@@ -13,8 +15,8 @@ export const cardRouters = Router()
     res.json(cards);
   })
 
-  .post('/', async (req, res) => {
-    const { title, projectId } = req.body as CardRequest;
+  .post('/', async (req: RequestCard, res) => {
+    const { title, projectId } = req.body;
     const card = {
       title,
       tasksId: [],
@@ -37,9 +39,16 @@ export const cardRouters = Router()
     res.json({ deleteCard: id });
   })
 
-  .put('/:id', async (req, res) => {
+  .put('/:id', async (req: RequestCard, res) => {
     const id = req.params.id;
-    const body = req.body;
 
-    res.json({ putCard: id, ...body });
+    const oldCard = await CardRecord.getOne(id);
+
+    if (req.body.title) oldCard.title = req.body.title;
+    if (req.body.projectId) oldCard.projectId = req.body.projectId;
+    if (req.body.tasksId) oldCard.tasksId = req.body.tasksId;
+
+    await new CardRecord(oldCard).update();
+
+    res.json({ status: 'ok' });
   });
