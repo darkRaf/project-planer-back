@@ -2,6 +2,7 @@ import { Request, Router } from 'express';
 import { CardRecord } from '../records/card.record';
 import { TaskRecord } from '../records/task.record';
 import { Priorities, TaskEntity, TaskRequest } from '../types';
+import { ValidationError } from '../utils/errors';
 
 type RequestTask = Request & Partial<TaskEntity>;
 
@@ -32,10 +33,22 @@ export const taskRouters = Router()
     res.json(newCard);
   })
 
-  .delete('/:id', async (req, res) => {
-    const id = req.params.id;
+  .delete('/:idCard/:idTask', async (req, res) => {
+    const { idCard, idTask } = req.params;
 
-    res.json({ deleteTask: id });
+    const task = await TaskRecord.getOne(idTask);
+    const card = await CardRecord.getOne(idCard);
+
+    if (!task && !card) throw new ValidationError(404, 'Nie odnaleziono karty lub zadania do usunięcia.');
+
+    const index = card.tasksId.indexOf(task.id);
+    if (index === -1) throw new ValidationError(404, 'Nie odnaleziono zadania w karcie do usunięcia.');
+
+    card.tasksId.splice(index, 1);
+    await card.update();
+    await task.delete();
+
+    res.json({ status: 'ok' });
   })
 
   .put('/:id', async (req: RequestTask, res) => {

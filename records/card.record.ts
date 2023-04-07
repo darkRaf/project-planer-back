@@ -81,4 +81,14 @@ export class CardRecord implements CardEntity {
       this,
     );
   }
+
+  static async deleteMore(idArr: string[]): Promise<void> {
+    if (!idArr.length) return;
+
+    let query = 'DELETE FROM `cards` WHERE `cards`.`id` IN ("';
+    query += idArr.join('","');
+    query += '")';
+
+    await pool.execute(query);
+  }
 }

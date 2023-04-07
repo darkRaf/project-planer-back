@@ -5,6 +5,8 @@ import { ProjectRecord } from '../records/project.record';
 import { TaskRecord } from '../records/task.record';
 import { UserRecord } from '../records/user.record';
 import { CardResponse, ProjectResponseData } from '../types';
+import { ValidationError } from '../utils/errors';
+import { pool } from '../utils/db';
 
 export const projectRouters = Router()
   .get('/', async (req: RequestTokenData, res) => {
@@ -37,6 +39,12 @@ export const projectRouters = Router()
 
   .post('/', async (req: RequestTokenData, res) => {
     const { id: userId } = req.user;
+
+    const allProjects = await ProjectRecord.getAll(userId);
+
+    if (allProjects !== null && allProjects.length === 10)
+      throw new ValidationError(400, 'Przekroczono maksymalną ilości 10-ciu projektów.');
+
     const projectData = {
       cardsId: [],
       ...req.body,
@@ -48,17 +56,37 @@ export const projectRouters = Router()
 
     const user = await UserRecord.getOne(userId);
     user.settings.activeIdProject = id;
-    await new UserRecord(user).update();
+    await user.update();
 
     res.json(user.settings);
   })
 
-  .delete('/:id', async (req, res) => {
+  .delete('/:id', async (req: RequestTokenData, res) => {
+    const { id: userId } = req.user;
     const id = req.params.id;
 
-    res.json({ deleteProject: id });
+    const user = await UserRecord.getOne(userId);
+    if (!user) throw new ValidationError(400, 'Nie odnaleziono użytkownika.');
+
+    const project = await ProjectRecord.getOne(id);
+    const cards = await CardRecord.getCardsData(project.cardsId);
+
+    for (const card of cards) {
+      await TaskRecord.deleteMore(card.tasksId);
+    }
+
+    await CardRecord.deleteMore(project.cardsId);
+    await project.delete();
+
+    const nextProject = await ProjectRecord.getAll(userId);
+    user.settings.activeIdProject = nextProject[0].id;
+
+    await user.update();
+
+    res.json({ status: 'ok' });
   })
 
+  // TODO:
   .put('/:id', async (req, res) => {
     const id = req.params.id;
     const body = req.body;

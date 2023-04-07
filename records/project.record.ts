@@ -83,4 +83,8 @@ export class ProjectRecord implements ProjectEntity {
       this,
     );
   }
+
+  async delete(): Promise<void> {
+    await pool.execute('DELETE FROM `projects` WHERE `projects`.`id`=:id', { id: this.id });
+  }
 }
