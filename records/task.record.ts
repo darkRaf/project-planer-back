@@ -17,7 +17,7 @@ export class TaskRecord implements TaskEntity {
     const bodyObj = typeof obj.body === 'string' ? JSON.parse(obj.body) : obj.body;
 
     if (obj.title.length < 3 || obj.title.length > 250) {
-      throw new ValidationError(400, 'Nazwa zadnia musi zawierać od 3 do 250 znaków.');
+      throw new ValidationError(400, 'Nazwa zadania musi zawierać od 3 do 250 znaków.');
     }
 
     this.id = obj.id;
@@ -63,7 +63,7 @@ export class TaskRecord implements TaskEntity {
       }
 
       await pool.execute(
-        'INSERT INTO `tasks`(`id`, `title`, `labels`, `body`, `addedAt`) VALUES (:id, :title, :labels, :body, :addedAt)',
+        'INSERT INTO `tasks`(`id`, `title`, `labels`, `body`) VALUES (:id, :title, :labels, :body)',
         this,
       );
 
@@ -78,5 +78,19 @@ export class TaskRecord implements TaskEntity {
       'UPDATE `tasks` SET `title`=:title,`labels`=:labels,`body`=:body,`addedAt`=:addedAt WHERE `id`=:id',
       this,
     );
+  }
+
+  async delete(): Promise<void> {
+    await pool.execute('DELETE FROM `tasks` WHERE `tasks`.`id`=:id', { id: this.id });
+  }
+
+  static async deleteMore(idArr: string[]): Promise<void> {
+    if (!idArr.length) return;
+
+    let query = 'DELETE FROM `tasks` WHERE `tasks`.`id` IN ("';
+    query += idArr.join('","');
+    query += '")';
+
+    await pool.execute(query);
   }
 }

@@ -50,7 +50,7 @@ export class UserRecord implements AddUserEntity {
     this.token = obj.token;
   }
 
-  static async getOne(id: string): Promise<UserEntity | null> {
+  static async getOne(id: string): Promise<UserRecord | null> {
     const [results] = (await pool.execute('SELECT * FROM `users` WHERE `id` = :id', {
       id,
     })) as UserdResults;
@@ -58,7 +58,7 @@ export class UserRecord implements AddUserEntity {
     return results.length === 0 ? null : new UserRecord(results[0]);
   }
 
-  static async getByEmail(email: string): Promise<UserEntity | null> {
+  static async getByEmail(email: string): Promise<UserRecord | null> {
     const [results] = (await pool.execute('SELECT * FROM `users` WHERE `email` = :email', {
       email,
     })) as [UserRecord[], FieldPacket[]];

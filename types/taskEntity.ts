@@ -1,7 +1,7 @@
 import { TaskBodyEntity } from './taskBodyEntity';
 
 export enum Priorities {
-  High = 'high',
+  High = 'hight',
   Medium = 'medium',
   Low = 'low',
   Undefined = 'undefined',
