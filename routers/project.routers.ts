@@ -6,7 +6,6 @@ import { TaskRecord } from '../records/task.record';
 import { UserRecord } from '../records/user.record';
 import { CardResponse, ProjectResponseData } from '../types';
 import { ValidationError } from '../utils/errors';
-import { pool } from '../utils/db';
 
 export const projectRouters = Router()
   .get('/', async (req: RequestTokenData, res) => {
@@ -79,7 +78,8 @@ export const projectRouters = Router()
     await project.delete();
 
     const nextProject = await ProjectRecord.getAll(userId);
-    user.settings.activeIdProject = nextProject[0].id;
+    if (nextProject) user.settings.activeIdProject = nextProject[0].id;
+    if (!nextProject) user.settings.activeIdProject = '';
 
     await user.update();
 

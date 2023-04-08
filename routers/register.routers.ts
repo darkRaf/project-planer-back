@@ -23,7 +23,7 @@ export const registerRouters = Router().post('/', async (req: Request, res: Resp
       {
         name: 'password',
         message:
-          'Pole `Hasło` musi zawierać od 8 do 20 znaków. Hasło powinno mieć małe i wielkie litery oraz cyfry i znaki specjalne.',
+          'Pole `Hasło` musi zawierać od 8 do 20 znaków. Hasło powinno zawierać małe i wielkie litery oraz cyfry i znaki specjalne.',
       },
     ]);
   }
