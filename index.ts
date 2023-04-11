@@ -15,6 +15,7 @@ import { projectRouters } from './routers/project.routers';
 import { cardRouters } from './routers/card.routers';
 import { taskRouters } from './routers/task.routers';
 import { errorHandler } from './utils/errors';
+import { weatherRouters } from './routers/weather.routers';
 
 const PORT = process.env.PORT || 3001;
 
@@ -39,6 +40,7 @@ app.use('/user', userRouters);
 app.use('/project', projectRouters);
 app.use('/card', cardRouters);
 app.use('/task', taskRouters);
+app.use('/weather', weatherRouters);
 app.use('*', (req, res) => res.status(404).send('Not Found'));
 app.use(errorHandler);
 
