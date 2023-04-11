@@ -3,6 +3,7 @@ dotenv.config();
 
 import express, { json } from 'express';
 import 'express-async-errors';
+import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { registerRouters } from './routers/register.routers';
@@ -21,13 +22,18 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 100,
+});
+
+app.use(limiter);
 app.use(
   cors({
     origin: 'http://localhost:3000',
     credentials: true,
   }),
 );
-
 app.use(cookieParser());
 app.use(json());
 
