@@ -37,16 +37,16 @@ app.use(
 app.use(cookieParser());
 app.use(json());
 
-app.use('/register', registerRouters);
-app.use('/login', loginRouters);
-app.use('/logout', logoutRouters);
-app.use('/refresh-token', refreshRouters);
+app.use('/api/register', registerRouters);
+app.use('/api/login', loginRouters);
+app.use('/api/logout', logoutRouters);
+app.use('/api/refresh-token', refreshRouters);
 app.use(authMiddle);
-app.use('/user', userRouters);
-app.use('/project', projectRouters);
-app.use('/card', cardRouters);
-app.use('/task', taskRouters);
-app.use('/weather', weatherRouters);
+app.use('/api/user', userRouters);
+app.use('/api/project', projectRouters);
+app.use('/api/card', cardRouters);
+app.use('/api/task', taskRouters);
+app.use('/api/weather', weatherRouters);
 app.use('*', (req, res) => res.status(404).send('Not Found'));
 app.use(errorHandler);
 
