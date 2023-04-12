@@ -50,7 +50,7 @@ Jest to część backendowa, która służy jako serwer REST API dla aplikacji "
 
 ## Link do strony
 
-<a href="https://www.google.com/" target="_blank">Google</a>
+<a href="https://raf.networkmanager.pl/" target="_blank">www.project-planer</a>
 
 <p align="right"><<a href="#readme-top">⬆do góry</a>></p>
 
@@ -85,10 +85,12 @@ Przykładowy plik znajdziesz pod nazwą `.env.example`.
 
 ## Uruchom lokalnie
 
+Plik `db.sql` zawiera instrukcje do utworzenia bazy danaych.
+
 Sklonuj repozytroium
 
 ```bash
-  git clone https://github.com/darkRaf/project-planer-back
+  git clone https://github.com/darkRaf/project-planer-back.git
 ```
 Przejdź do folderu
 
