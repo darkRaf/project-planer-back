@@ -50,7 +50,7 @@ Jest to część backendowa, która służy jako serwer REST API dla aplikacji "
 
 ## Link do strony
 
-<a href="https://raf.networkmanager.pl/" target="_blank">www.project-planer</a>
+<a href="https://project-planer.rafal-13.smallhost.pl" target="_blank">www.project-planer</a>
 
 <p align="right"><<a href="#readme-top">⬆do góry</a>></p>
 
